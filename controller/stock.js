@@ -72,8 +72,30 @@ const updateStock = (req, res, next) => {
         UPDATE stock
         SET 
             price=${req.body.price}, 
-            name='${req.body.name}',
+            name='${req.body.name}'
+           
+           
+        WHERE stockcode='${req.params.stockcode}'
+    `;
+    db.query(updateQuery).then(dbRes => {
+        console.log(dbRes.rows)
+        res.json({
+            error: false,
+            message: 'Stock details updated successfully'
+        });
+    }).catch(dbErr => {
+        console.log("here")
+        next(dbErr);
+    });
+}
+
+const updateStockLimit = (req, res, next) => {
+    console.log(req.params.stockcode,req.body)
+    const updateQuery = `
+        UPDATE stock
+        SET 
             stocklimit=${req.body.stocklimit}
+           
            
         WHERE stockcode='${req.params.stockcode}'
     `;
@@ -104,6 +126,20 @@ const deleteStock = (req, res, next) => {
     });
 }
 
+const removeStock = (req, res, next) => {
+    const query = `
+        DELETE FROM investorstock
+        WHERE stockcode='${req.params.stockcode}'
+    `;
+    db.query(query).then(dbRes => {
+        res.json({
+            error: false,
+            message: 'Stock Deleted Successfully'
+        });
+    }).catch(dbErr => {
+        next(dbErr);
+    });
+}
 
 
 const validateBuyingLimit=(req,res,next)=>{
@@ -276,7 +312,9 @@ module.exports = {
     getAllStockById,
     addStock,
     updateStock,
+    updateStockLimit,
     deleteStock,
+    removeStock,
     validateBuyingLimit,
     validateUpdatedQuantity,
     getStockQuantity,

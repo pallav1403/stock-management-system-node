@@ -62,6 +62,7 @@ router.post('/login', (req, res, next) => {
             });
         } else {
             const passwordMatched = bcrypt.compareSync(req.body.password, dbRes.rows[0].password);
+            console.log(passwordMatched)
             if (passwordMatched) {
                 const payload = {
                     email: dbRes.rows[0].email,
@@ -69,7 +70,9 @@ router.post('/login', (req, res, next) => {
                     role: dbRes.rows[0].role,
                     user_id:dbRes.rows[0].user_id
                 };
+              
                 const token = jwt.sign(payload, config.jwtSecret, {expiresIn: '1hr'});
+                console.log(token)
                 res.json({
                     error: false,
                     message: 'Login Successfull',
